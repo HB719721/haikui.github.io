@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>海葵呀 - 个人介绍</title>
+    <title>个人主页 | 动画交互展示</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -12,403 +12,583 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
         }
-        
+
+        :root {
+            --primary: #7c73ff;
+            --secondary: #ff7b9c;
+            --dark: #2a2d3e;
+            --light: #f8f9fa;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+
         body {
-            background: linear-gradient(135deg, #6e45e2, #88d3ce);
-            color: #333;
-            line-height: 1.6;
+            color: var(--dark);
             min-height: 100vh;
+            overflow-x: hidden;
+            background-attachment: fixed;
+            /* 默认背景（当JS未加载时使用） */
+            background: linear-gradient(135deg, #f0f4ff 0%, #f9f0ff 100%);
+            transition: background 1s ease;
+        }
+
+        /* 竖屏样式 */
+        body.portrait {
+            background-image: url('shu.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        /* 横屏样式 */
+        body.landscape {
+            background-image: url('heng.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        /* 媒体查询作为备用方案 */
+        @media (orientation: portrait) {
+            body {
+                background-image: url('shu.jpg');
+                background-size: cover;
+                background-position: center;
+            }
+        }
+        
+        @media (orientation: landscape) {
+            body {
+                background-image: url('heng.jpg');
+                background-size: cover;
+                background-position: center;
+            }
+        }
+
+        /* 页面加载动画 */
+        .page-load {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            z-index: 9999;
+            animation: fadeOut 1.5s ease forwards 1.8s;
         }
-        
-        .container {
-            max-width: 900px;
-            width: 100%;
-            background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            padding: 40px;
+
+        .loader {
+            width: 80px;
+            height: 80px;
             position: relative;
         }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            position: relative;
-        }
-        
-        .avatar {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            margin: 0 auto 25px;
-            border: 6px solid #6e45e2;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-            transition: transform 0.5s ease;
-        }
-        
-        .avatar:hover {
-            transform: scale(1.05);
-        }
-        
-        .avatar img {
+
+        .loader-circle {
+            position: absolute;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            border: 5px solid transparent;
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1.2s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
         }
-        
-        .name {
-            font-size: 42px;
-            color: #6e45e2;
-            margin-bottom: 10px;
+
+        .loader-circle:nth-child(2) {
+            border: 5px solid transparent;
+            border-bottom-color: white;
+            animation-delay: 0.3s;
+        }
+
+        .welcome-text {
+            position: absolute;
+            color: white;
+            font-size: 2.2rem;
             font-weight: 700;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards 0.5s;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease forwards 2s;
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 15px;
             letter-spacing: 1px;
         }
-        
-        .tagline {
-            font-size: 22px;
+
+        .subtitle {
+            font-size: 1.2rem;
             color: #666;
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-        
-        .description {
             max-width: 600px;
-            margin: 0 auto 30px;
-            color: #777;
-            font-size: 16px;
-            line-height: 1.8;
+            margin: 0 auto;
+            line-height: 1.6;
         }
-        
+
+        /* 内容区域 */
         .content {
             display: flex;
             flex-wrap: wrap;
-            gap: 30px;
+            justify-content: center;
+            gap: 50px;
+            margin-bottom: 60px;
         }
-        
-        .section {
+
+        /* 头像区域 */
+        .avatar-section {
+            flex: 0 0 300px;
+            text-align: center;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 260px;
+            height: 260px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 8px solid white;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .avatar-container:hover {
+            transform: scale(1.05) rotate(5deg);
+            box-shadow: 0 15px 40px rgba(108, 99, 255, 0.3);
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .avatar-container:hover .avatar {
+            transform: scale(1.1);
+        }
+
+        .avatar-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .avatar-desc {
+            color: #777;
+            line-height: 1.6;
+        }
+
+        /* 联系按钮区域 */
+        .contact-section {
             flex: 1;
             min-width: 300px;
-            margin-bottom: 20px;
+            max-width: 600px;
         }
-        
-        .section-title {
-            font-size: 24px;
-            color: #6e45e2;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #eee;
+
+        .contact-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: var(--dark);
             position: relative;
+            padding-bottom: 15px;
         }
-        
-        .section-title::after {
+
+        .contact-title::after {
             content: '';
             position: absolute;
-            bottom: -3px;
+            bottom: 0;
             left: 0;
-            width: 60px;
-            height: 3px;
-            background: #6e45e2;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 2px;
         }
-        
-        .contact-list {
-            list-style: none;
-        }
-        
-        .contact-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-        
-        .contact-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-            background-color: #f0f2ff;
-        }
-        
-        .contact-icon {
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #6e45e2, #88d3ce);
-            color: white;
-            border-radius: 50%;
-            margin-right: 15px;
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-        
-        .contact-info {
-            flex: 1;
-        }
-        
-        .contact-label {
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 5px;
-            font-size: 16px;
-        }
-        
-        .contact-value {
-            color: #777;
-            font-size: 15px;
-        }
-        
-        .social-links {
-            display: flex;
-            justify-content: center;
-            margin-top: 30px;
+
+        .contact-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
         }
-        
-        .social-link {
+
+        .contact-btn {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 16px;
+            padding: 20px;
             display: flex;
-            justify-content: center;
             align-items: center;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            color: white;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
             text-decoration: none;
-            font-size: 24px;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            color: inherit;
         }
-        
-        .social-link:hover {
-            transform: translateY(-8px) scale(1.1);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+
+        .contact-btn:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 20px 40px rgba(108, 99, 255, 0.2);
         }
-        
-        .bilibili {
-            background: linear-gradient(135deg, #fb7299, #ff2769);
-        }
-        
-        .kuaishou {
-            background: linear-gradient(135deg, #ff5000, #ff9900);
-        }
-        
-        .email {
-            background: linear-gradient(135deg, #4285f4, #34a853);
-        }
-        
-        .qq {
-            background: linear-gradient(135deg, #12b7f5, #0084ff);
-        }
-        
-        .wechat {
-            background: linear-gradient(135deg, #07c160, #05a049);
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            color: #777;
-            font-size: 14px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-        
-        .badge {
-            display: inline-block;
-            padding: 5px 12px;
-            background: linear-gradient(135deg, #6e45e2, #88d3ce);
+
+        /* 图标样式 */
+        .btn-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 15px;
+            z-index: 2;
+            position: relative;
             color: white;
-            border-radius: 20px;
-            font-size: 14px;
-            margin: 0 5px;
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+
+        .btn-content {
+            z-index: 2;
+            position: relative;
+        }
+
+        .btn-label {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 5px;
+            transition: var(--transition);
+        }
+
+        .btn-text {
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        /* 弹跳动画 */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            25% { transform: translateY(-15px); }
+            50% { transform: translateY(0); }
+            75% { transform: translateY(-5px); }
+        }
+
+        .bounce {
+            animation: bounce 0.8s ease;
+        }
+
+        /* 底部说明 */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #777;
+            font-size: 0.95rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hint {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: rgba(108, 99, 255, 0.1);
+            border-radius: 50px;
+            color: var(--primary);
+        }
+
+        .hint i {
+            margin-right: 8px;
+        }
+
+        /* 屏幕方向提示 */
+        .orientation-hint {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            z-index: 100;
+            opacity: 0.7;
+            transition: opacity 0.3s;
         }
         
+        .orientation-hint:hover {
+            opacity: 1;
+        }
+
+        /* 响应式设计 */
         @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .title {
+                font-size: 2.5rem;
+            }
+
+            .avatar-section {
+                flex: 0 0 auto;
+            }
+
+            .contact-section {
+                width: 100%;
+            }
+            
             .container {
-                padding: 25px;
-            }
-            
-            .name {
-                font-size: 36px;
-            }
-            
-            .tagline {
-                font-size: 20px;
-            }
-            
-            .avatar {
-                width: 150px;
-                height: 150px;
-            }
-            
-            .social-link {
-                width: 50px;
-                height: 50px;
-                font-size: 20px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .container {
-                padding: 20px;
-            }
-            
-            .name {
-                font-size: 32px;
-            }
-            
-            .tagline {
-                font-size: 18px;
-            }
-            
-            .section {
-                min-width: 100%;
+                padding: 30px 15px;
+                margin: 15px;
+                border-radius: 15px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="avatar">
-                <!-- 已更新为本地头像文件 -->
-                <img src="23.png" alt="海葵呀的头像">
-            </div>
-            <h1 class="name">海葵呀</h1>
-            <p class="tagline">furry控 & 科技圈爱好者</p> 
-          <div>
-                <span class="badge">科技爱好者</span>
-                <span class="badge">Furry文化</span>
-                <span class="badge">内容创作者</span>
-            </div>
+    <!-- 页面加载动画 -->
+    <div class="page-load">
+        <div class="loader">
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
         </div>
-        
+        <div class="welcome-text">欢迎访问</div>
+    </div>
+
+    <!-- 屏幕方向提示 -->
+    <div class="orientation-hint" id="orientationHint">
+        <i class="fas fa-mobile-alt"></i>
+        <span id="orientationText">竖屏模式</span>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="container">
+        <header>
+            <h1 class="title">个人主页</h1>
+            <p class="subtitle">这是一个具有流畅动画和交互效果的个人主页。点击下方按钮可以查看联系方式，所有元素都有丝滑的动画效果。</p>
+        </header>
+
         <div class="content">
-            <div class="section">
-                <h2 class="section-title">关于我</h2>
-                <p>你好！我是海葵呀</p>
-                <p>欢迎通过下面的联系方式与我交流！</p>
+            <!-- 头像区域 -->
+            <div class="avatar-section">
+                <div class="avatar-container">
+                    <!-- 注意：请将您的头像文件命名为 23.png 并放置在同一目录下，替换下面这行 -->
+                    <!-- <img src="23.png" alt="头像" class="avatar"> -->
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="头像" class="avatar">
+                </div>
+                <h2 class="avatar-title">海葵呀-furry控</h2>
+                <p class="avatar-desc">动画爱好者 | 设计爱好者 | 二次元文化追随者</p>
             </div>
-            
-            <div class="section">
-                <h2 class="section-title">联系方式</h2>
-                <ul class="contact-list">
-                    <li class="contact-item">
-                        <div class="contact-icon">
+
+            <!-- 联系按钮区域 -->
+            <div class="contact-section">
+                <h2 class="contact-title">联系与关注</h2>
+                <div class="contact-buttons">
+                    <!-- 邮箱按钮 -->
+                    <a href="mailto:zeng5310245@qq.com" class="contact-btn" id="email-btn">
+                        <div class="btn-icon" style="background: linear-gradient(135deg, #ea4335, #ff6b6b);">
                             <i class="fas fa-envelope"></i>
                         </div>
-                        <div class="contact-info">
-                            <div class="contact-label">邮箱</div>
-                            <div class="contact-value">zeng5310245@qq.com</div>
+                        <div class="btn-content">
+                            <div class="btn-label">邮箱联系</div>
+                            <div class="btn-text">zeng5310245@qq.com</div>
                         </div>
-                    </li>
-                    <li class="contact-item">
-                        <div class="contact-icon">
+                    </a>
+
+                    <!-- QQ按钮 -->
+                    <a href="https://qm.qq.com/q/Lapt9N9niu" target="_blank" class="contact-btn" id="qq-btn">
+                        <div class="btn-icon" style="background: linear-gradient(135deg, #12b7f5, #2eccff);">
                             <i class="fab fa-qq"></i>
                         </div>
-                        <div class="contact-info">
-                            <div class="contact-label">QQ</div>
-                            <div class="contact-value">2522144315</div>
+                        <div class="btn-content">
+                            <div class="btn-label">QQ联系</div>
+                            <div class="btn-text">QQ: 2522144315</div>
                         </div>
-                    </li>
-                    <li class="contact-item">
-                        <div class="contact-icon">
+                    </a>
+
+                    <!-- 微信按钮 -->
+                    <div class="contact-btn" id="wechat-btn">
+                        <div class="btn-icon" style="background: linear-gradient(135deg, #09bb07, #4cd964);">
                             <i class="fab fa-weixin"></i>
                         </div>
-                        <div class="contact-info">
-                            <div class="contact-label">微信</div>
-                            <div class="contact-value">LXH112233-332211</div>
+                        <div class="btn-content">
+                            <div class="btn-label">微信</div>
+                            <div class="btn-text">微信: LXH112233-332211</div>
                         </div>
-                    </li>
-                    <li class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-tv"></i>
+                    </div>
+
+                    <!-- 哔哩哔哩按钮 -->
+                    <a href="https://space.bilibili.com/589046238" target="_blank" class="contact-btn" id="bilibili-btn">
+                        <div class="btn-icon" style="background: linear-gradient(135deg, #fb7299, #ff9db5);">
+                            <i class="fas fa-play-circle"></i>
                         </div>
-                        <div class="contact-info">
-                            <div class="contact-label">哔哩哔哩</div>
-                            <div class="contact-value">海葵呀-furry控</div>
+                        <div class="btn-content">
+                            <div class="btn-label">哔哩哔哩</div>
+                            <div class="btn-text">海葵呀-furry控</div>
                         </div>
-                    </li>
-                    <li class="contact-item">
-                        <div class="contact-icon">
+                    </a>
+
+                    <!-- 快手按钮 -->
+                    <a href="https://live.kuaishou.com/profile/LuoXiaoHei-123?fid=3017476631&cc=share_copylink&followRefer=151&shareMethod=TOKEN&kpn=NEBULA&subBiz=PROFILE&shareId=18656631541201&shareToken=X9rmY6BitZ2s29D&shareResourceType=PROFILE_SELF&shareMode=APP&originShareId=18656631541201&appType=21&shareObjectId=3017476631&shareUrlOpened=0&timestamp=1762076716744" target="_blank" class="contact-btn" id="kuaishou-btn">
+                        <div class="btn-icon" style="background: linear-gradient(135deg, #ff5500, #ff8c42);">
                             <i class="fas fa-video"></i>
                         </div>
-                        <div class="contact-info">
-                            <div class="contact-label">快手</div>
-                            <div class="contact-value">LuoXiaoHei-123</div>
+                        <div class="btn-content">
+                            <div class="btn-label">快手</div>
+                            <div class="btn-text">罗小黑furry控</div>
                         </div>
-                    </li>
-                </ul>
+                    </a>
+                </div>
             </div>
         </div>
-        
-        <div class="social-links">
-            <a href="mailto:zeng5310245@qq.com" class="social-link email" title="发送邮件">
-                <i class="fas fa-envelope"></i>
-            </a>
-            <a href="https://space.bilibili.com/589046238" class="social-link bilibili" target="_blank" title="哔哩哔哩">
-                <i class="fas fa-tv"></i>
-            </a>
-            <a href="https://v.kuaishou.com/JT1tt5Lt" class="social-link kuaishou" target="_blank" title="快手">
-                <i class="fas fa-video"></i>
-            </a>
-            <a href="https://qm.qq.com/q/SzAmB6WCWG" class="social-link qq" target="_blank" title="QQ">
-                <i class="fab fa-qq"></i>
-            </a>
-            <a href="https://message.biliimg.com/bfs/im_new/9157503b6b4c89dbf34dcad7d5777644589046238.jpg" class="social-link wechat" target="_blank" title="微信">
-                <i class="fab fa-weixin"></i>
-            </a>
-        </div>
-        
-        <div class="footer">
-            <p>© 2026 海葵呀 - 个人介绍页面 | 设计制作：海葵呀</p>
-        </div>
+
+        <footer>
+            <p>© 2026 个人主页</p>
+            <div class="hint">
+                <i class="fas fa-sync-alt"></i>
+                <span>旋转设备可切换背景图片</span>
+            </div>
+        </footer>
     </div>
 
     <script>
-        // 添加一些交互效果
         document.addEventListener('DOMContentLoaded', function() {
-            // 为联系项目添加点击效果
-            const contactItems = document.querySelectorAll('.contact-item');
+            // 检测屏幕方向并设置背景
+            function detectOrientation() {
+                const isPortrait = window.innerHeight > window.innerWidth;
+                const body = document.body;
+                const hint = document.getElementById('orientationText');
+                
+                if (isPortrait) {
+                    body.className = 'portrait';
+                    if (hint) hint.textContent = '竖屏模式 (shu.jpg)';
+                } else {
+                    body.className = 'landscape';
+                    if (hint) hint.textContent = '横屏模式 (heng.jpg)';
+                }
+            }
             
-            contactItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    this.style.transform = 'translateY(-5px)';
+            // 初始检测
+            detectOrientation();
+            
+            // 监听窗口大小变化（包括设备旋转）
+            window.addEventListener('resize', detectOrientation);
+            window.addEventListener('orientationchange', detectOrientation);
+            
+            // 获取所有可点击元素
+            const clickableElements = document.querySelectorAll('.contact-btn, .avatar-container');
+            
+            // 为每个元素添加点击弹跳动画
+            clickableElements.forEach(element => {
+                element.addEventListener('click', function(e) {
+                    // 阻止微信按钮的默认行为（不跳转）
+                    if (this.id === 'wechat-btn') {
+                        e.preventDefault();
+                    }
+                    
+                    // 添加弹跳动画类
+                    this.classList.add('bounce');
+                    
+                    // 动画结束后移除类，以便可以再次触发
                     setTimeout(() => {
-                        this.style.transform = '';
-                    }, 300);
+                        this.classList.remove('bounce');
+                    }, 800);
                 });
             });
             
-            // 为社交媒体链接添加波纹效果
-            const socialLinks = document.querySelectorAll('.social-link');
-            
-            socialLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    const x = e.clientX - e.target.getBoundingClientRect().left;
-                    const y = e.clientY - e.target.getBoundingClientRect().top;
-                    
-                    const ripple = document.createElement('span');
-                    ripple.style.left = x + 'px';
-                    ripple.style.top = y + 'px';
-                    ripple.classList.add('ripple');
-                    
-                    this.appendChild(ripple);
-                    
-                    setTimeout(() => {
-                        ripple.remove();
-                    }, 600);
+            // 为微信按钮添加特殊提示
+            const wechatBtn = document.getElementById('wechat-btn');
+            wechatBtn.addEventListener('click', function() {
+                // 创建一个提示元素
+                const hint = document.createElement('div');
+                hint.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, #09bb07, #4cd964);
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                    z-index: 10000;
+                    font-weight: 600;
+                    animation: fadeInUp 0.5s ease;
+                `;
+                hint.textContent = '微信已复制：LXH112233-332211';
+                document.body.appendChild(hint);
+                
+                // 3秒后移除提示
+                setTimeout(() => {
+                    hint.style.animation = 'fadeOut 0.5s ease forwards';
+                    setTimeout(() => hint.remove(), 500);
+                }, 3000);
+                
+                // 模拟复制到剪贴板
+                navigator.clipboard.writeText('LXH112233-332211').catch(err => {
+                    console.log('复制失败: ', err);
                 });
             });
+            
+            // 添加图片加载失败处理
+            document.body.addEventListener('error', function(e) {
+                if (e.target.tagName === 'BODY' && e.target.style.backgroundImage) {
+                    // 如果背景图片加载失败，使用备用渐变背景
+                    document.body.style.backgroundImage = '';
+                    document.body.style.background = 'linear-gradient(135deg, #f0f4ff 0%, #f9f0ff 100%)';
+                    
+                    // 更新提示
+                    const hint = document.getElementById('orientationText');
+                    if (hint) {
+                        hint.textContent = '背景加载失败，使用备用背景';
+                        hint.parentElement.style.background = 'rgba(255, 0, 0, 0.7)';
+                    }
+                }
+            }, true);
         });
     </script>
 </body>
