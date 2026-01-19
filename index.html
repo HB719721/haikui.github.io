@@ -27,7 +27,6 @@
             min-height: 100vh;
             overflow-x: hidden;
             background-attachment: fixed;
-            /* 默认背景（当JS未加载时使用） */
             background: linear-gradient(135deg, #f0f4ff 0%, #f9f0ff 100%);
             transition: background 1s ease;
         }
@@ -417,9 +416,8 @@
             <!-- 头像区域 -->
             <div class="avatar-section">
                 <div class="avatar-container">
-                    <!-- 注意：请将您的头像文件命名为 23.png 并放置在同一目录下，替换下面这行 -->
-                    <!-- <img src="23.png" alt="头像" class="avatar"> -->
-                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="头像" class="avatar">
+                    <!-- 头像已替换为 23.png -->
+                    <img src="23.png" alt="头像" class="avatar">
                 </div>
                 <h2 class="avatar-title">海葵呀-furry控</h2>
                 <p class="avatar-desc">动画爱好者 | 设计爱好者 | 二次元文化追随者</p>
@@ -488,7 +486,7 @@
         </div>
 
         <footer>
-            <p>© 2026 个人主页</p>
+            <p>© 2023 个人主页 | 背景会根据设备方向自动切换</p>
             <div class="hint">
                 <i class="fas fa-sync-alt"></i>
                 <span>旋转设备可切换背景图片</span>
@@ -589,6 +587,16 @@
                     }
                 }
             }, true);
+            
+            // 添加头像加载失败处理
+            const avatarImg = document.querySelector('.avatar');
+            if (avatarImg) {
+                avatarImg.addEventListener('error', function() {
+                    // 如果23.png加载失败，使用备用头像
+                    this.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80';
+                    console.log('本地头像加载失败，使用备用头像');
+                });
+            }
         });
     </script>
 </body>
