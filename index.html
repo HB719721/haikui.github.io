@@ -20,15 +20,37 @@
             --light: #f8f9fa;
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            
+            /* 浅色模式颜色变量 */
+            --bg-color: #f8f9fa;
+            --text-color: #333333;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            --button-bg: rgba(255, 255, 255, 0.9);
+            --button-hover: rgba(255, 255, 255, 1);
+            --border-color: rgba(0, 0, 0, 0.05);
+            --hint-bg: rgba(108, 99, 255, 0.1);
+        }
+
+        /* 深色模式颜色变量 */
+        body.dark-mode {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --card-bg: rgba(30, 30, 40, 0.85);
+            --card-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            --button-bg: rgba(50, 50, 60, 0.9);
+            --button-hover: rgba(60, 60, 70, 1);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --hint-bg: rgba(124, 115, 255, 0.2);
         }
 
         body {
-            color: var(--dark);
+            color: var(--text-color);
             min-height: 100vh;
             overflow-x: hidden;
+            background-color: var(--bg-color);
             background-attachment: fixed;
-            background: linear-gradient(135deg, #f0f4ff 0%, #f9f0ff 100%);
-            transition: background 1s ease;
+            transition: background-color 0.8s ease, color 0.8s ease;
         }
 
         /* 竖屏样式 */
@@ -43,6 +65,24 @@
             background-image: url('heng.jpg');
             background-size: cover;
             background-position: center;
+        }
+        
+        /* 深色模式下的背景图片遮罩 */
+        body.dark-mode.portrait,
+        body.dark-mode.landscape {
+            position: relative;
+        }
+        
+        body.dark-mode.portrait::before,
+        body.dark-mode.landscape::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: -1;
         }
         
         /* 媒体查询作为备用方案 */
@@ -123,6 +163,49 @@
             100% { opacity: 1; transform: translateY(0); }
         }
 
+        /* 主题切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--button-bg);
+            backdrop-filter: blur(10px);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--text-color);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            transition: var(--transition);
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            background: var(--button-hover);
+        }
+        
+        .dark-mode .theme-toggle .fa-sun {
+            display: none;
+        }
+        
+        .dark-mode .theme-toggle .fa-moon {
+            display: block;
+        }
+        
+        .theme-toggle .fa-sun {
+            display: block;
+        }
+        
+        .theme-toggle .fa-moon {
+            display: none;
+        }
+
         /* 主容器 */
         .container {
             max-width: 1200px;
@@ -131,9 +214,10 @@
             opacity: 0;
             transform: translateY(30px);
             animation: fadeInUp 1s ease forwards 2s;
-            background-color: rgba(255, 255, 255, 0.85);
+            background-color: var(--card-bg);
             border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--card-shadow);
+            transition: background-color 0.8s ease, box-shadow 0.8s ease;
         }
 
         header {
@@ -154,7 +238,8 @@
 
         .subtitle {
             font-size: 1.2rem;
-            color: #666;
+            color: var(--text-color);
+            opacity: 0.8;
             max-width: 600px;
             margin: 0 auto;
             line-height: 1.6;
@@ -183,9 +268,9 @@
             border-radius: 50%;
             overflow: hidden;
             box-shadow: var(--shadow);
-            border: 8px solid white;
+            border: 8px solid var(--card-bg);
             transition: var(--transition);
-            background: white;
+            background: var(--card-bg);
         }
 
         .avatar-container:hover {
@@ -208,11 +293,12 @@
             font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 10px;
-            color: var(--dark);
+            color: var(--text-color);
         }
 
         .avatar-desc {
-            color: #777;
+            color: var(--text-color);
+            opacity: 0.7;
             line-height: 1.6;
         }
 
@@ -226,7 +312,7 @@
         .contact-title {
             font-size: 2rem;
             margin-bottom: 30px;
-            color: var(--dark);
+            color: var(--text-color);
             position: relative;
             padding-bottom: 15px;
         }
@@ -249,7 +335,7 @@
         }
 
         .contact-btn {
-            background: rgba(255, 255, 255, 0.9);
+            background: var(--button-bg);
             backdrop-filter: blur(10px);
             border: none;
             border-radius: 16px;
@@ -262,12 +348,12 @@
             position: relative;
             overflow: hidden;
             text-decoration: none;
-            color: inherit;
+            color: var(--text-color);
         }
 
         .contact-btn:hover {
             transform: translateY(-8px);
-            background: rgba(255, 255, 255, 1);
+            background: var(--button-hover);
             box-shadow: 0 20px 40px rgba(108, 99, 255, 0.2);
         }
 
@@ -295,7 +381,8 @@
 
         .btn-label {
             font-size: 0.9rem;
-            color: #777;
+            color: var(--text-color);
+            opacity: 0.7;
             margin-bottom: 5px;
             transition: var(--transition);
         }
@@ -322,9 +409,10 @@
         footer {
             text-align: center;
             padding: 30px 0;
-            color: #777;
+            color: var(--text-color);
+            opacity: 0.7;
             font-size: 0.95rem;
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            border-top: 1px solid var(--border-color);
             max-width: 800px;
             margin: 0 auto;
         }
@@ -334,7 +422,7 @@
             align-items: center;
             margin-top: 15px;
             padding: 10px 20px;
-            background: rgba(108, 99, 255, 0.1);
+            background: var(--hint-bg);
             border-radius: 50px;
             color: var(--primary);
         }
@@ -356,6 +444,11 @@
             z-index: 100;
             opacity: 0.7;
             transition: opacity 0.3s;
+        }
+        
+        .dark-mode .orientation-hint {
+            background: rgba(255, 255, 255, 0.2);
+            color: #e0e0e0;
         }
         
         .orientation-hint:hover {
@@ -386,6 +479,14 @@
                 margin: 15px;
                 border-radius: 15px;
             }
+            
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
         }
     </style>
 </head>
@@ -399,6 +500,12 @@
         <div class="welcome-text">欢迎访问</div>
     </div>
 
+    <!-- 主题切换按钮 -->
+    <button class="theme-toggle" id="themeToggle" title="切换主题">
+        <i class="fas fa-sun"></i>
+        <i class="fas fa-moon"></i>
+    </button>
+
     <!-- 屏幕方向提示 -->
     <div class="orientation-hint" id="orientationHint">
         <i class="fas fa-mobile-alt"></i>
@@ -409,7 +516,7 @@
     <div class="container">
         <header>
             <h1 class="title">个人主页</h1>
-            <p class="subtitle">点击下方按钮我的查看联系方式！。</p>
+            <p class="subtitle">点击下方按钮可以查看和我的联系方式！</p>
         </header>
 
         <div class="content">
@@ -420,7 +527,7 @@
                     <img src="23.png" alt="头像" class="avatar">
                 </div>
                 <h2 class="avatar-title">海葵呀-furry控</h2>
-                <p class="avatar-desc">简单的furry控</p>
+                <p class="avatar-desc">普通的furry控</p>
             </div>
 
             <!-- 联系按钮区域 -->
@@ -486,7 +593,7 @@
         </div>
 
         <footer>
-            <p>© 2026 个人主页</p>
+            <p>© 2026 个人主页 | <span id="modeInfo">当前模式：日间模式</span></p>
             <div class="hint">
                 <i class="fas fa-sync-alt"></i>
                 <span>旋转设备可切换背景图片</span>
@@ -503,10 +610,12 @@
                 const hint = document.getElementById('orientationText');
                 
                 if (isPortrait) {
-                    body.className = 'portrait';
+                    body.classList.add('portrait');
+                    body.classList.remove('landscape');
                     if (hint) hint.textContent = '竖屏模式 (shu.jpg)';
                 } else {
-                    body.className = 'landscape';
+                    body.classList.add('landscape');
+                    body.classList.remove('portrait');
                     if (hint) hint.textContent = '横屏模式 (heng.jpg)';
                 }
             }
@@ -517,6 +626,61 @@
             // 监听窗口大小变化（包括设备旋转）
             window.addEventListener('resize', detectOrientation);
             window.addEventListener('orientationchange', detectOrientation);
+            
+            // 主题切换功能
+            const themeToggle = document.getElementById('themeToggle');
+            const modeInfo = document.getElementById('modeInfo');
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+            
+            // 检查本地存储的主题偏好
+            let currentTheme = localStorage.getItem('theme');
+            
+            // 如果没有本地存储的偏好，根据时间自动判断
+            if (!currentTheme) {
+                const currentHour = new Date().getHours();
+                // 晚上18点到早上6点自动使用深色模式
+                if (currentHour >= 18 || currentHour < 6) {
+                    currentTheme = 'dark';
+                } else {
+                    currentTheme = 'light';
+                }
+            }
+            
+            // 应用主题
+            function applyTheme(theme) {
+                const body = document.body;
+                
+                if (theme === 'dark') {
+                    body.classList.add('dark-mode');
+                    if (modeInfo) modeInfo.textContent = '当前模式：夜间模式';
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    body.classList.remove('dark-mode');
+                    if (modeInfo) modeInfo.textContent = '当前模式：日间模式';
+                    localStorage.setItem('theme', 'light');
+                }
+            }
+            
+            // 初始化主题
+            applyTheme(currentTheme);
+            
+            // 切换主题
+            themeToggle.addEventListener('click', function() {
+                const body = document.body;
+                if (body.classList.contains('dark-mode')) {
+                    applyTheme('light');
+                } else {
+                    applyTheme('dark');
+                }
+            });
+            
+            // 监听系统主题变化
+            prefersDarkScheme.addListener((e) => {
+                // 只有当用户没有手动设置主题时才跟随系统
+                if (!localStorage.getItem('theme')) {
+                    applyTheme(e.matches ? 'dark' : 'light');
+                }
+            });
             
             // 获取所有可点击元素
             const clickableElements = document.querySelectorAll('.contact-btn, .avatar-container');
@@ -547,7 +711,7 @@
                 hint.style.cssText = `
                     position: fixed;
                     top: 20px;
-                    right: 20px;
+                    right: 80px;
                     background: linear-gradient(135deg, #09bb07, #4cd964);
                     color: white;
                     padding: 12px 20px;
@@ -597,6 +761,20 @@
                     console.log('本地头像加载失败，使用备用头像');
                 });
             }
+            
+            // 每10分钟检查一次时间，自动切换夜间模式（如果用户没有手动设置）
+            setInterval(() => {
+                if (!localStorage.getItem('theme')) {
+                    const currentHour = new Date().getHours();
+                    const body = document.body;
+                    
+                    if ((currentHour >= 18 || currentHour < 6) && !body.classList.contains('dark-mode')) {
+                        applyTheme('dark');
+                    } else if (currentHour >= 6 && currentHour < 18 && body.classList.contains('dark-mode')) {
+                        applyTheme('light');
+                    }
+                }
+            }, 600000); // 10分钟
         });
     </script>
 </body>
